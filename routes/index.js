@@ -1,4 +1,4 @@
-const profileRoutes = require('./profile_routes');
+const profileRoutes = require('./profileRoutes');
 
 //initialize express router
 let router = require('express').Router();
@@ -27,6 +27,10 @@ router
 const genderController = require('../controllers/genderController');
 
 router.route('/gender').get(genderController.index);
+
+const likeController = require('../controllers/likeController');
+
+router.route('/like').post(likeController.add);
 
 //Export API routes
 module.exports = router;
