@@ -32,5 +32,12 @@ const likeController = require('../controllers/likeController');
 
 router.route('/like').post(likeController.add);
 
+const messageController = require('../controllers/messageController');
+
+router
+  .route('/msg/:dialogId')
+  .post(messageController.add)
+  .get(messageController.view);
+
 //Export API routes
 module.exports = router;

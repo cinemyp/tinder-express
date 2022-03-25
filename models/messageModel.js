@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const messageSchema = mongoose.Schema({
-  userId: { type: String, required: true },
-  likedUserId: { type: String, required: true },
-  likedAt: { type: Date, default: Date.now },
+  dialogId: { type: String, required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Like = (module.exports = mongoose.model('like', likeSchema));
+const Message = (module.exports = mongoose.model('message', messageSchema));
 
 module.exports.get = (callback, limit) => {
-  Like.find(callback).limit(limit);
+  Message.find(callback).limit(limit);
 };
