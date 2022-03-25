@@ -24,5 +24,9 @@ router
   .put(profileController.update)
   .delete(profileController.delete);
 
+const genderController = require('../controllers/genderController');
+
+router.route('/gender').get(genderController.index);
+
 //Export API routes
 module.exports = router;

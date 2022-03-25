@@ -4,13 +4,12 @@ exports.index = (req, res) => {
   Profile.get((err, profile) => {
     if (err) {
       res.json({
-        status: 'error',
+        status: false,
         message: err,
       });
     }
     res.json({
-      status: 'success',
-      message: 'Got Profile Successfuly',
+      status: true,
       data: profile,
     });
   });
@@ -32,7 +31,7 @@ exports.add = (req, res) => {
       res.json(err);
       console.log(err);
     }
-    res.json({ message: 'New Profile Added', data: profile });
+    res.json({ status: true, data: profile });
   });
 };
 
@@ -41,7 +40,7 @@ exports.view = (req, res) => {
     if (err) {
       res.send(err);
     }
-    res.json({ message: 'Profile Details', data: profile });
+    res.json({ status: true, data: profile });
   });
 };
 
@@ -62,7 +61,7 @@ exports.update = (req, res) => {
       if (err) {
         res.send(err);
       }
-      res.json({ message: 'Profile updated', data: profile });
+      res.json({ status: true, data: profile });
     });
   });
 };
@@ -76,7 +75,7 @@ exports.delete = (req, res) => {
       if (err) {
         res.send(err);
       }
-      res.json({ status: 'success', message: 'Profile deleted' });
+      res.json({ status: true });
     }
   );
 };
