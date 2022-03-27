@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 const passport = require('passport');
-const YandexStrategy = require('passport-yandex').Strategy;
 
 const http = require('http');
 const https = require('https');
@@ -22,53 +21,11 @@ const app = express();
 
 const port = process.env.PORT || 5050;
 
-//Configure Authentication Strategy
-passport.serializeUser(function (user, done) {
-  done(null, user);
-});
-passport.deserializeUser(function (user, done) {
-  done(null, user);
-});
-
-passport.use(
-  new YandexStrategy(
-    {
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: 'http://192.168.0.17:8000/auth/callback',
-    },
-    (accessToken, refreshToken, profile, done) => {
-      //Registration
-      console.log(profile);
-      return done(null, profile);
-    }
-  )
-);
-
 //CONFIGURE
 app.use(bodyParser.json());
 app.use(expressSession({ secret: 'keyboard cat', cookie: {} }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get('/auth', passport.authenticate('yandex'), (req, res) => {
-  console.log('start auth');
-});
-app.get(
-  '/auth/callback',
-  passport.authenticate('yandex', { failureRedirect: '/login' }),
-  (req, res) => {
-    console.log('auth successful');
-    res.redirect('/redirect');
-  }
-);
-app.get('/logout', (req, res) => {
-  req.logOut();
-  res.redirect('/');
-});
-app.get('/redirect', (req, res) => {
-  res.redirect('exp://127.0.0.1:19000');
-});
 
 //Import routes
 let apiRoutes = require('./routes');

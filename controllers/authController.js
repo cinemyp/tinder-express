@@ -1,14 +1,38 @@
-const authUrl = 'https://oauth.yandex.ru/authorize?';
+const passport = require('passport');
+const YandexStrategy = require('passport-yandex').Strategy;
+const Profile = require('../models/profileModel');
 
-exports.redirect = (req, res) => {
-  console.log('redirect');
-  res.redirect(
-    `https://oauth.yandex.ru/authorize?response_type=code&client_id=${process.env.CLIENT_ID}`
-  );
+//Configure Authentication Strategy
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.use(
+  new YandexStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: 'http://192.168.0.17:8000/auth/callback',
+    },
+    (accessToken, refreshToken, profile, done) => {
+      //Registration
+      console.log(profile);
+      return done(null, profile);
+    }
+  )
+);
+
+exports.auth = (req, res) => {
+  console.log('start auth');
 };
-
-exports.token = (req, res) => {
-  console.log('token');
+exports.callback = (req, res) => {
+  console.log('auth successful');
+  res.redirect('exp://127.0.0.1:19000');
 };
-
-exports.auth = (req, res) => {};
+exports.loguout = (req, res) => {
+  req.logOut();
+  res.redirect('/');
+};

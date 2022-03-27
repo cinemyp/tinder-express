@@ -1,16 +1,16 @@
-const profileRoutes = require('./profileRoutes');
+const passport = require('passport');
+const authController = require('../controllers/authController');
 
 //initialize express router
 let router = require('express').Router();
-//set default API response
-router.get('/', function (req, res) {
-  res.json({
-    status: 'AUTH Works',
-    message: 'Welcome to Tinify Auth',
-  });
-});
 
-const authController = require('../controllers/authController');
-router.route('/redirect').get(authController.redirect);
+router.route('/').get(passport.authenticate('yandex'), authController.auth);
+router
+  .route('/callback')
+  .get(
+    passport.authenticate('yandex', { failureRedirect: '/login' }),
+    authController.callback
+  );
+router.get('/logout').get(authController.loguout);
 
 module.exports = router;
