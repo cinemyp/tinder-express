@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const profileSchema = mongoose.Schema({
+  yandexId: { type: String, required: true },
   avatar: { type: String, required: true },
   birthdayDate: { type: Date, required: true },
   email: { type: String, required: true },

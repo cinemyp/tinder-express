@@ -18,6 +18,7 @@ exports.index = (req, res) => {
 exports.add = (req, res) => {
   console.log(req.body);
   const profile = new Profile({
+    yandexId: req.body.yandexId,
     name: req.body.name,
     avatar: req.body.avatar ?? '',
     birthdayDate: req.body.birthdayDate,
