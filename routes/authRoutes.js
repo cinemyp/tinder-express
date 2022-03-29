@@ -1,16 +1,13 @@
-const passport = require('passport');
 const authController = require('../controllers/authController');
+const { verifyUser } = require('../middlewares');
 
 //initialize express router
 let router = require('express').Router();
 
-router.route('/').get(passport.authenticate('yandex'), authController.auth);
-router
-  .route('/callback')
-  .get(
-    passport.authenticate('yandex', { failureRedirect: '/login' }),
-    authController.callback
-  );
-router.get('/logout').get(authController.loguout);
+router.route('/').get(authController.auth);
+router.route('/callback').get(authController.callback);
+router.route('/logout').get(authController.loguout);
+router.route('/me').get(authController.me);
+router.route('/success').get(authController.success);
 
 module.exports = router;

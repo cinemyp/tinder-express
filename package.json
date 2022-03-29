@@ -1,14 +1,20 @@
 {
   "dependencies": {
     "body-parser": "^1.19.2",
+    "connect-mongo": "3.2.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "http": "^0.0.1-security",
     "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.8",
     "passport": "^0.5.2",
     "passport-yandex": "^0.0.5",
+    "passport-yandex-token": "^2.1.0",
+    "request": "^2.88.2",
+    "uuid4": "^2.0.2",
     "ym-api": "^1.2.1"
   },
   "name": "tinder-express",

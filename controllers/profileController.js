@@ -1,22 +1,21 @@
 const Profile = require('../models/profileModel');
 
-exports.index = (req, res) => {
-  Profile.get((err, profile) => {
+exports.index = async (req, res) => {
+  const { userId } = req.query;
+  const user = await Profile.findById(userId).exec();
+
+  Profile.find({ genderId: { $ne: user.genderId } }, (err, profile) => {
     if (err) {
       res.json({
         status: false,
         message: err,
       });
     }
-    res.json({
-      status: true,
-      data: profile,
-    });
+    res.json(profile);
   });
 };
 
 exports.add = (req, res) => {
-  console.log(req.body);
   const profile = new Profile({
     yandexId: req.body.yandexId,
     name: req.body.name,
