@@ -11,6 +11,7 @@ exports.index = async (req, res) => {
         message: err,
       });
     }
+    console.log(profile);
     res.json(profile);
   });
 };
