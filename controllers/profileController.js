@@ -2,8 +2,9 @@ const Profile = require('../models/profileModel');
 
 exports.index = async (req, res) => {
   const { userId } = req.query;
-  const user = await Profile.findById(userId).exec();
+  const user = await Profile.findById(userId);
 
+  //TODO: добавить проверку, если лайкали
   Profile.find({ genderId: { $ne: user.genderId } }, (err, profile) => {
     if (err) {
       res.json({

@@ -1,4 +1,5 @@
 const Like = require('../models/likeModel');
+const { createDialog } = require('./dialogController');
 
 exports.add = async (req, res) => {
   const newLike = {
@@ -9,8 +10,10 @@ exports.add = async (req, res) => {
   try {
     const result = await Like.findOne(newLike).exec();
     const hasLiked = !!result;
+
+    //если мы лайкнули, то ничего не делаем
     if (hasLiked) {
-      return res.json({ status: true });
+      return res.json({ match: false });
     } else {
       const like = new Like(newLike);
 
@@ -19,8 +22,20 @@ exports.add = async (req, res) => {
           console.log(err);
           return res.json({ status: false, error: err });
         }
-        res.json({ status: true });
       });
+
+      //проверим на взаимную симпатию
+      const otherLike = {
+        userId: req.body.likedUserId,
+        likedUserId: req.body.userId,
+      };
+      const likeFind = await Like.findOne(otherLike).exec();
+      const match = !!likeFind;
+
+      //Создадим диалог
+      createDialog(req.body.userId, req.body.likedUserId, res);
+
+      res.json({ match });
     }
   } catch (error) {
     console.error(error);

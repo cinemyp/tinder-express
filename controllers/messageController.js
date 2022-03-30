@@ -7,12 +7,12 @@ exports.add = (req, res) => {
     dialogId,
     content: req.body.content,
   });
-
+  //TODO: выставить последние сообщения в диалогах
   message.save((err) => {
     if (err) {
       return res.json(err);
     }
-    res.json({ status: true, data: message });
+    res.status(201).send();
   });
 };
 
@@ -21,6 +21,6 @@ exports.view = (req, res) => {
     if (error) {
       return res.json({ status: false, error });
     }
-    res.json({ status: true, data: docs });
+    res.json(docs);
   }).limit(50);
 };
