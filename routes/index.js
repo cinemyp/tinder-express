@@ -41,8 +41,7 @@ router
 
 const dialogController = require('../controllers/dialogController');
 
-router.route('/dialog').post(dialogController.add);
-router.route('/dialog/:fromId').get(dialogController.view);
+// router.route('/dialog').post(dialogController.add);
 
 //Export API routes
 module.exports = router;

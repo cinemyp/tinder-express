@@ -2,46 +2,32 @@ const Message = require('../models/messageModel');
 const Profile = require('../models/profileModel');
 const Dialog = require('../models/dialogModel');
 
-exports.add = (req, res) => {
-  const dialogId = req.params.dialogId;
-
+exports.add = async (dialogId, fromId, text) => {
   const msg = {
     dialogId,
-    text: req.body.content,
-    fromId: req.body.fromId,
+    text,
+    fromId,
   };
+  try {
+    const message = new Message(msg);
 
-  const message = new Message(msg);
-  //TODO: выставить последние сообщения в диалогах
-  message.save((err) => {
-    if (err) {
-      return res.json(err);
-    }
-    res.status(201).send();
-  });
+    await message.save();
 
-  Dialog.findByIdAndUpdate(
-    dialogId,
-    {
+    Dialog.findByIdAndUpdate(dialogId, {
       latestMessage: { text: msg.text, createdAt: Date.now() },
-    },
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-      }
-    }
-  );
+    }).exec();
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-exports.view = (req, res) => {
-  Message.find({ dialogId: req.params.dialogId }, async (error, docs) => {
-    if (error) {
-      return res.json({ status: false, error });
-    }
+exports.view = async (dialogId) => {
+  try {
+    const data = await Message.find({ dialogId: dialogId }).limit(50).exec();
 
     //TODO: подумать над оптимизацией, тк всего два пользователя
     let results = [];
-    for (let msg of docs) {
+    for (let msg of data) {
       const participant = await Profile.findById(msg.fromId)
         .select('_id name avatar')
         .exec();
@@ -55,7 +41,8 @@ exports.view = (req, res) => {
       };
       results = [newMsg, ...results];
     }
-
-    res.json(results);
-  }).limit(50);
+    return results;
+  } catch (err) {
+    console.error(err);
+  }
 };

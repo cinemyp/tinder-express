@@ -7,35 +7,34 @@ exports.add = (req, res) => {
   return res.status(200).ok();
 };
 
-exports.view = (req, res) => {
-  Dialog.find(
-    { $or: [{ fromId: req.params.fromId }, { toId: req.params.fromId }] },
-    async (error, docs) => {
-      if (error) {
-        console.log(error);
-        return res.json({ status: false, error });
-      }
+exports.view = async (fromId) => {
+  try {
+    const res = await Dialog.find({
+      $or: [{ fromId: fromId }, { toId: fromId }],
+    })
+      .limit(50)
+      .exec();
 
-      let results = [];
-      for (let doc of docs) {
-        const participantId =
-          req.params.fromId === doc.fromId ? doc.toId : doc.fromId;
-        const participant = await Profile.findById(participantId)
-          .select('_id name avatar')
-          .exec();
+    let results = [];
+    for (let doc of res) {
+      const participantId = fromId === doc.fromId ? doc.toId : doc.fromId;
+      const participant = await Profile.findById(participantId)
+        .select('_id name avatar')
+        .exec();
 
-        const dialog = {
-          _id: doc._id,
-          toId: doc.toId,
-          fromId: doc.fromId,
-          latestMessage: doc.latestMessage || undefined,
-          participant,
-        };
-        results = [...results, dialog];
-      }
-      res.json(results);
+      const dialog = {
+        _id: doc._id,
+        toId: doc.toId,
+        fromId: doc.fromId,
+        latestMessage: doc.latestMessage || undefined,
+        participant,
+      };
+      results = [...results, dialog];
     }
-  ).limit(50);
+    return results;
+  } catch (err) {
+    console.error(error);
+  }
 };
 
 exports.createDialog = (toId, fromId, res) => {

@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+const { Server } = require('socket.io');
+
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -42,12 +44,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Import routes
 let apiRoutes = require('./routes/index');
 let authRoutes = require('./routes/authRoutes');
+const { onConnection } = require('./socket');
 
 app.use('/api', apiRoutes);
 app.use('/auth', authRoutes);
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
+
+const io = new Server(httpServer, {
+  serveClient: false,
+});
+io.on('connection', (socket) => {
+  onConnection(io, socket);
+});
 
 httpServer.listen(8000, () => {
   console.log('HTTP: We are live on ' + 8000);
