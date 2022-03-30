@@ -1,14 +1,17 @@
 const Message = require('../models/messageModel');
 const Profile = require('../models/profileModel');
+const Dialog = require('../models/dialogModel');
 
 exports.add = (req, res) => {
   const dialogId = req.params.dialogId;
 
-  const message = new Message({
+  const msg = {
     dialogId,
     text: req.body.content,
     fromId: req.body.fromId,
-  });
+  };
+
+  const message = new Message(msg);
   //TODO: выставить последние сообщения в диалогах
   message.save((err) => {
     if (err) {
@@ -16,6 +19,18 @@ exports.add = (req, res) => {
     }
     res.status(201).send();
   });
+
+  Dialog.findByIdAndUpdate(
+    dialogId,
+    {
+      latestMessage: { text: msg.text, createdAt: Date.now() },
+    },
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
 };
 
 exports.view = (req, res) => {

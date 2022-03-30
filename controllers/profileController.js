@@ -1,19 +1,27 @@
 const Profile = require('../models/profileModel');
+const Like = require('../models/likeModel');
 
 exports.index = async (req, res) => {
   const { userId } = req.query;
   const user = await Profile.findById(userId);
 
   //TODO: добавить проверку, если лайкали
-  Profile.find({ genderId: { $ne: user.genderId } }, (err, profile) => {
+  Profile.find({ genderId: { $ne: user.genderId } }, async (err, profiles) => {
     if (err) {
       res.json({
         status: false,
         message: err,
       });
     }
-    console.log(profile);
-    res.json(profile);
+    let results = [];
+    for (let p of profiles) {
+      const result = await Like.findOne({ userId, likedUserId: p._id }).exec();
+      const hasLiked = !!result;
+      if (!hasLiked) {
+        results = [...results, p];
+      }
+    }
+    res.json(results);
   });
 };
 

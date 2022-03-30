@@ -14,6 +14,7 @@
     "passport-yandex": "^0.0.5",
     "passport-yandex-token": "^2.1.0",
     "request": "^2.88.2",
+    "socket.io": "^4.4.1",
     "uuid4": "^2.0.2",
     "ym-api": "^1.2.1"
   },

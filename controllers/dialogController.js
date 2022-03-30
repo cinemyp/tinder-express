@@ -20,12 +20,15 @@ exports.view = (req, res) => {
       for (let doc of docs) {
         const participantId =
           req.params.fromId === doc.fromId ? doc.toId : doc.fromId;
-        const participant = await Profile.findById(participantId).exec();
+        const participant = await Profile.findById(participantId)
+          .select('_id name avatar')
+          .exec();
 
         const dialog = {
           _id: doc._id,
           toId: doc.toId,
           fromId: doc.fromId,
+          latestMessage: doc.latestMessage || undefined,
           participant,
         };
         results = [...results, dialog];
