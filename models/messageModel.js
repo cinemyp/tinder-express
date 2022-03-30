@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const messageSchema = mongoose.Schema({
   dialogId: { type: String, required: true },
-  content: { type: String, required: true },
+  text: { type: String, required: true },
+  fromId: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 
