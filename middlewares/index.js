@@ -7,3 +7,4 @@ exports.verifyUser = () => {
     res.redirect('exp://localhost:19000/Login');
   };
 };
+exports.upload = () => {};
