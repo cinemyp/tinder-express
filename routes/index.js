@@ -1,5 +1,3 @@
-const profileRoutes = require('./profileRoutes');
-
 //initialize express router
 let router = require('express').Router();
 //set default API response

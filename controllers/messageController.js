@@ -1,6 +1,7 @@
 const Message = require('../models/messageModel');
 const Profile = require('../models/profileModel');
 const Dialog = require('../models/dialogModel');
+const { limitText } = require('../utils');
 
 exports.add = async (dialogId, fromId, text) => {
   const msg = {
@@ -14,7 +15,7 @@ exports.add = async (dialogId, fromId, text) => {
     await message.save();
 
     Dialog.findByIdAndUpdate(dialogId, {
-      latestMessage: { text: msg.text, createdAt: Date.now() },
+      latestMessage: { text: limitText(msg.text, 40), createdAt: Date.now() },
     }).exec();
   } catch (err) {
     console.error(err);
