@@ -7,5 +7,9 @@ const dialogHandlers = (io, socket) => {
     const dialogs = await dialogController.view(userId);
     socket.emit('dialogs:send', dialogs);
   });
+
+  socket.on('dialogs:leave', async (dialogId) => {
+    socket.leave(dialogId);
+  });
 };
 module.exports = dialogHandlers;
