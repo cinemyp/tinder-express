@@ -3,6 +3,13 @@ const request = require('request');
 const Profile = require('../models/profileModel');
 const Gender = require('../models/genderModel');
 
+/**
+ * Метод аутентификации через Яндекс.Паспорт
+ * Получаем url для перехода к авторизации
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.auth = (req, res, next) => {
   request(
     `https://oauth.yandex.ru/authorize?response_type=code&client_id=${process.env.CLIENT_ID}`,
@@ -14,6 +21,13 @@ exports.auth = (req, res, next) => {
     }
   );
 };
+
+/**
+ * Колбэк на авторизацию/регистрацию пользователя
+ * Возвращает нам токен
+ * @param {*} req
+ * @param {*} res
+ */
 exports.callback = (req, res) => {
   //TODO: заменить на .params
   const code = parseCode(req);
@@ -32,13 +46,22 @@ exports.callback = (req, res) => {
       if (err) return res.status(500).send({ message: err });
       //TODO: Обработать ошибку с запроса
       const tokenData = parseJson(body);
-      await getUser(tokenData.access_token, registrate);
+      try {
+        await getUser(tokenData.access_token, registrate);
 
-      return res.jsonp(tokenData);
+        return res.jsonp(tokenData);
+      } catch (err) {
+        console.log(err);
+      }
     }
   );
 };
 
+/**
+ * Метод получения данных о пользователе
+ * @param {*} req
+ * @param {*} res
+ */
 exports.me = (req, res) => {
   const token = parseToken(req);
 
@@ -57,10 +80,21 @@ exports.me = (req, res) => {
   });
 };
 
+/**
+ * Метод перенаправления в приложения, после успешной авторизации/регистрации
+ * @param {*} req
+ * @param {*} res
+ */
 exports.success = (req, res) => {
   res.redirect('exp://127.0.0.1:19000/');
 };
 
+/**
+ * Доп метод регистрации пользователя
+ * Берет данные из профиля Яндекса и создает профиль в БД
+ * @param {*} body
+ * @returns
+ */
 async function registrate(body) {
   const { id, first_name, sex, birthday } = parseJson(body);
   try {
@@ -89,6 +123,11 @@ async function registrate(body) {
   }
 }
 
+/**
+ * Метод, который обращается за данными о пользователе
+ * @param {*} token
+ * @param {*} callback
+ */
 async function getUser(token, callback) {
   request.get(
     {
@@ -98,7 +137,11 @@ async function getUser(token, callback) {
       },
     },
     async (err, response, body) => {
-      await callback(body);
+      try {
+        await callback(body);
+      } catch (err) {
+        console.log(err);
+      }
     }
   );
 }

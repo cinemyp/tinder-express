@@ -53,26 +53,6 @@ app.use('/photo', photoRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// app.get('/photo/:filename', async (req, res) => {
-//   try {
-//     const file = await gfs.files.findOne({ filename: req.params.filename });
-//     const readStream = gfs.createReadStream(file.filename);
-//     readStream.pipe(res);
-//   } catch (error) {
-//     res.send('not found');
-//   }
-// });
-
-// app.delete('/photo/:filename', async (req, res) => {
-//   try {
-//     await gfs.files.deleteOne({ filename: req.params.filename });
-//     res.send('success');
-//   } catch (error) {
-//     console.log(error);
-//     res.send('An error occured.');
-//   }
-// });
-
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 

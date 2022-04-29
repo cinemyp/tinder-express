@@ -1,5 +1,10 @@
 const Gender = require('../models/genderModel');
 
+/**
+ * Метод получения списка гендеров
+ * @param {*} req
+ * @param {*} res
+ */
 exports.index = (req, res) => {
   Gender.get((err, profile) => {
     if (err) {

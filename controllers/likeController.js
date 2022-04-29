@@ -1,6 +1,12 @@
 const Like = require('../models/likeModel');
 const { createDialog } = require('./dialogController');
 
+/**
+ * Метод отправления лайка (симпатии)
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 exports.add = async (req, res) => {
   const newLike = {
     userId: req.body.userId,

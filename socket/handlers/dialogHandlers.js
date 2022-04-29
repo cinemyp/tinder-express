@@ -3,9 +3,9 @@ const dialogController = require('../../controllers/dialogController');
 const dialogHandlers = (io, socket) => {
   const { userId } = socket.handshake.query;
 
-  socket.on('dialogs', async () => {
+  socket.on('dialogs:get', async () => {
     const dialogs = await dialogController.view(userId);
-    socket.emit('user dialogs', dialogs);
+    socket.emit('dialogs:send', dialogs);
   });
 };
 module.exports = dialogHandlers;

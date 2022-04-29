@@ -1,6 +1,11 @@
 const Profile = require('../models/profileModel');
 const Like = require('../models/likeModel');
 
+/**
+ * Метод подгрузки профилей
+ * @param {*} req
+ * @param {*} res
+ */
 exports.index = async (req, res) => {
   const { userId } = req.query;
   const user = await Profile.findById(userId);
@@ -14,17 +19,30 @@ exports.index = async (req, res) => {
       });
     }
     let results = [];
-    for (let p of profiles) {
-      const result = await Like.findOne({ userId, likedUserId: p._id }).exec();
-      const hasLiked = !!result;
-      if (!hasLiked) {
-        results = [...results, p];
+    try {
+      for (let p of profiles) {
+        const result = await Like.findOne({
+          userId,
+          likedUserId: p._id,
+        }).exec();
+        const hasLiked = !!result;
+        if (!hasLiked) {
+          results = [...results, p];
+        }
       }
+      res.json(results);
+    } catch (err) {
+      console.log(err);
     }
-    res.json(results);
   });
 };
 
+/**
+ * Метод создания нового профиля
+ * Используется в АПИ
+ * @param {*} req
+ * @param {*} res
+ */
 exports.add = (req, res) => {
   const profile = new Profile({
     yandexId: req.body.yandexId,
@@ -45,6 +63,11 @@ exports.add = (req, res) => {
   });
 };
 
+/**
+ * Метод просмотра профиля
+ * @param {*} req
+ * @param {*} res
+ */
 exports.view = (req, res) => {
   Profile.findById(req.params.profileId, (err, profile) => {
     if (err) {
@@ -54,6 +77,11 @@ exports.view = (req, res) => {
   });
 };
 
+/**
+ * Метод обновления профиля
+ * @param {*} req
+ * @param {*} res
+ */
 exports.update = (req, res) => {
   Profile.findById(req.params.profileId, (err, profile) => {
     if (err) {
@@ -76,6 +104,11 @@ exports.update = (req, res) => {
   });
 };
 
+/**
+ * Метод удаления профиля
+ * @param {*} req
+ * @param {*} res
+ */
 exports.delete = (req, res) => {
   Profile.deleteOne(
     {

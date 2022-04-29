@@ -3,6 +3,13 @@ const Profile = require('../models/profileModel');
 const Dialog = require('../models/dialogModel');
 const { limitText } = require('../utils');
 
+/**
+ * Метод сохранения сообщения в БД
+ * Используется в сокете
+ * @param {*} dialogId
+ * @param {*} fromId
+ * @param {*} text
+ */
 exports.add = async (dialogId, fromId, text) => {
   const msg = {
     dialogId,
@@ -22,6 +29,12 @@ exports.add = async (dialogId, fromId, text) => {
   }
 };
 
+/**
+ * Метод сохранения сообщения в БД
+ * Используется в АПИ
+ * @param {*} req
+ * @param {*} res
+ */
 exports.addReq = async (req, res) => {
   const { dialogId } = req.params;
   const { fromId, text } = req.body;
@@ -46,6 +59,12 @@ exports.addReq = async (req, res) => {
   }
 };
 
+/**
+ * Метод получения сообщений
+ * Используется в сокете
+ * @param {*} dialogId
+ * @returns
+ */
 exports.view = async (dialogId) => {
   try {
     const data = await Message.find({ dialogId: dialogId }).limit(50).exec();
@@ -72,6 +91,12 @@ exports.view = async (dialogId) => {
   }
 };
 
+/**
+ * Метод получения сообщений
+ * Используется в АПИ
+ * @param {*} req
+ * @param {*} res
+ */
 exports.viewReq = async (req, res) => {
   const { dialogId } = req.params;
   try {

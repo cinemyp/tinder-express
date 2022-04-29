@@ -1,6 +1,12 @@
 const Dialog = require('../models/dialogModel');
 const Profile = require('../models/profileModel');
 
+/**
+ * Списочный метод получения диалогов
+ * Этот метод используется для сокета
+ * @param {*} fromId ID пользователя
+ * @returns
+ */
 exports.view = async (fromId) => {
   try {
     const res = await Dialog.find({
@@ -31,6 +37,13 @@ exports.view = async (fromId) => {
   }
 };
 
+/**
+ * Метод создания нового диалога
+ * Вызывается при взаимной симпатии
+ * @param {*} toId ID адресата
+ * @param {*} fromId ID адресанта
+ * @param {*} res
+ */
 exports.createDialog = (toId, fromId, res) => {
   const dialog = new Dialog({
     toId: toId,
@@ -44,6 +57,12 @@ exports.createDialog = (toId, fromId, res) => {
   });
 };
 
+/**
+ * Списочный метод получения диалогов
+ * Этот метод используется для АПИ
+ * @param {*} req
+ * @param {*} res
+ */
 exports.viewReq = async (req, res) => {
   const fromId = req.params.fromId;
 
