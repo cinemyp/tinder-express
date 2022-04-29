@@ -15,6 +15,7 @@ exports.auth = (req, res, next) => {
   );
 };
 exports.callback = (req, res) => {
+  //TODO: заменить на .params
   const code = parseCode(req);
 
   request.post(
@@ -29,18 +30,13 @@ exports.callback = (req, res) => {
     },
     async (err, response, body) => {
       if (err) return res.status(500).send({ message: err });
-
+      //TODO: Обработать ошибку с запроса
       const tokenData = parseJson(body);
       await getUser(tokenData.access_token, registrate);
 
       return res.jsonp(tokenData);
     }
   );
-};
-
-exports.loguout = (req, res) => {
-  req.logOut();
-  res.redirect('/');
 };
 
 exports.me = (req, res) => {

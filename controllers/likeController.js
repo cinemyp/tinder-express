@@ -9,7 +9,6 @@ exports.add = async (req, res) => {
   console.log(req.body);
   try {
     const result = await Like.findOne(newLike).exec();
-    console.log(result);
     const hasLiked = !!result;
 
     //если мы лайкнули, то ничего не делаем

@@ -5,7 +5,7 @@ exports.index = async (req, res) => {
   const { userId } = req.query;
   const user = await Profile.findById(userId);
 
-  //TODO: добавить проверку, если лайкали
+  //TODO: добавить обработку ошибок
   Profile.find({ genderId: { $ne: user.genderId } }, async (err, profiles) => {
     if (err) {
       res.json({

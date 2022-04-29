@@ -15,12 +15,12 @@ router
   .get(profileController.index)
   .post(profileController.add);
 
-router
-  .route('/profile/:profileId')
-  .get(profileController.view)
-  .patch(profileController.update)
-  .put(profileController.update)
-  .delete(profileController.delete);
+//TODO: организовать удаление пользователя
+// router.route('/profile/:profileId');
+// .get(profileController.view)
+// .patch(profileController.update)
+// .put(profileController.update)
+// .delete(profileController.delete);
 
 const genderController = require('../controllers/genderController');
 
@@ -34,12 +34,12 @@ const messageController = require('../controllers/messageController');
 
 router
   .route('/msg/:dialogId')
-  .post(messageController.add)
-  .get(messageController.view);
+  .post(messageController.addReq)
+  .get(messageController.viewReq);
 
 const dialogController = require('../controllers/dialogController');
 
-// router.route('/dialog').post(dialogController.add);
+router.route('/dialog/:fromId').get(dialogController.viewReq);
 
 //Export API routes
 module.exports = router;

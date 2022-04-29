@@ -53,8 +53,9 @@ router.post(
     await Profile.findByIdAndUpdate(userId, {
       avatar: '/uploads/' + req.file.originalname,
     }).exec();
-    if (!filedata) res.send('Ошибка при загрузке файла');
-    else res.send('Файл загружен');
+    if (!filedata)
+      res.json({ status: false, message: 'Ошибка при загрузке файла' });
+    else res.json({ status: true, message: 'Файл загружен' });
   }
 );
 
