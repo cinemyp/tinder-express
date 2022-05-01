@@ -1,11 +1,13 @@
 const dialogController = require('../../controllers/dialogController');
 
 const dialogHandlers = (io, socket) => {
-  const { userId } = socket.handshake.query;
-
-  socket.on('dialogs:get', async () => {
+  socket.on('dialogs:get', async (userId) => {
     const dialogs = await dialogController.view(userId);
     socket.emit('dialogs:send', dialogs);
+  });
+
+  socket.on('dialogs:join', async (dialogId) => {
+    socket.join(dialogId);
   });
 
   socket.on('dialogs:leave', async (dialogId) => {

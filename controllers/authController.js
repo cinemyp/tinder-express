@@ -1,5 +1,5 @@
 const request = require('request');
-
+const axios = require('axios');
 const Profile = require('../models/profileModel');
 const Gender = require('../models/genderModel');
 
@@ -47,9 +47,8 @@ exports.callback = (req, res) => {
       //TODO: Обработать ошибку с запроса
       const tokenData = parseJson(body);
       try {
-        await getUser(tokenData.access_token, registrate);
-
-        return res.jsonp(tokenData);
+        const result = await getUser(tokenData.access_token, registrate);
+        return res.jsonp({ ...tokenData, ...result });
       } catch (err) {
         console.log(err);
       }
@@ -64,9 +63,8 @@ exports.callback = (req, res) => {
  */
 exports.me = (req, res) => {
   const token = parseToken(req);
-
   getUser(token, async (body) => {
-    const { id } = parseJson(body);
+    const { id } = body;
     try {
       let profile = await Profile.findOne({ yandexId: id });
       if (!profile) {
@@ -96,11 +94,11 @@ exports.success = (req, res) => {
  * @returns
  */
 async function registrate(body) {
-  const { id, first_name, sex, birthday } = parseJson(body);
+  const { id, first_name, sex, birthday } = body;
   try {
     let profile = await Profile.findOne({ yandexId: id });
     if (profile) {
-      return;
+      return { registrated: true };
     } else {
       //Registration
       const gender = await Gender.findOne({
@@ -117,6 +115,7 @@ async function registrate(body) {
         thumbnail: '',
       };
       await Profile.create(newProfile);
+      return { registrated: false };
     }
   } catch (err) {
     console.error(err);
@@ -129,21 +128,15 @@ async function registrate(body) {
  * @param {*} callback
  */
 async function getUser(token, callback) {
-  request.get(
-    {
-      url: 'https://login.yandex.ru/info',
-      headers: {
-        Authorization: 'OAuth ' + token,
-      },
-    },
-    async (err, response, body) => {
-      try {
-        await callback(body);
-      } catch (err) {
-        console.log(err);
-      }
+  axios.defaults.headers.common['Authorization'] = 'OAuth ' + token;
+  return await axios.get('https://login.yandex.ru/info').then(async (res) => {
+    try {
+      const result = await callback(res.data);
+      return result;
+    } catch (err) {
+      console.log(err);
     }
-  );
+  });
 }
 
 function parseJson(body) {

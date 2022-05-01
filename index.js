@@ -55,11 +55,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
-
+let count = 0;
 const io = new Server(httpServer, {
   serveClient: false,
 });
 io.on('connection', (socket) => {
+  console.log('connect', count++);
   onConnection(io, socket);
 });
 
@@ -69,3 +70,5 @@ httpServer.listen(8000, () => {
 httpsServer.listen(port, () => {
   console.log('HTTPS: We are live on ' + port);
 });
+
+module.exports.app = app;
