@@ -7,11 +7,11 @@ const dialogHandlers = (io, socket) => {
   });
 
   socket.on('dialogs:join', async (dialogId) => {
-    socket.join(dialogId);
+    socket.join(dialogId.toString());
   });
 
   socket.on('dialogs:leave', async (dialogId) => {
-    socket.leave(dialogId);
+    socket.leave(dialogId.toString());
   });
 };
 module.exports = dialogHandlers;
