@@ -2,7 +2,7 @@ const request = require('request');
 const axios = require('axios');
 const Profile = require('../models/profileModel');
 const Gender = require('../models/genderModel');
-
+const { parseToken } = require('../utils');
 /**
  * Метод аутентификации через Яндекс.Паспорт
  * Получаем url для перехода к авторизации
@@ -48,6 +48,7 @@ exports.callback = (req, res) => {
       const tokenData = parseJson(body);
       try {
         const result = await getUser(tokenData.access_token, registrate);
+        console.log(tokenData.access_token);
         return res.jsonp({ ...tokenData, ...result });
       } catch (err) {
         console.log(err);
@@ -143,9 +144,6 @@ function parseJson(body) {
   return JSON.parse(body);
 }
 
-function parseToken(req) {
-  return req.headers.authorization.split(' ')[1];
-}
 function parseCode(req) {
   return req.url.match(/code=(.*)/)[1];
 }

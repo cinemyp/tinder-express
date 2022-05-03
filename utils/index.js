@@ -9,3 +9,6 @@ exports.limitText = (text, limit) => {
   }
   return text + '...';
 };
+exports.parseToken = (req) => {
+  return req.headers.authorization.split(' ')[1];
+};

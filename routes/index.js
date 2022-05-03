@@ -41,5 +41,9 @@ const dialogController = require('../controllers/dialogController');
 
 router.route('/dialog/:fromId').get(dialogController.viewReq);
 
+//MUSIC YM API
+
+const musicController = require('../controllers/musicController');
+router.route('/music').get(musicController.index);
 //Export API routes
 module.exports = router;
