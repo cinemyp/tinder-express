@@ -37,6 +37,9 @@ const resizeImages = async (req, res, next) => {
 const removeOriginalFile = (req, res, next) => {
   const { userId } = req.params;
   Profile.findById(userId, (err, profile) => {
+    if (!profile.avatar) {
+      return next();
+    }
     fs.unlink(`public${profile.avatar}`, function () {
       next();
     });
