@@ -45,5 +45,6 @@ router.route('/dialog/:fromId').get(dialogController.viewReq);
 
 const musicController = require('../controllers/musicController');
 router.route('/music').get(musicController.index);
+router.route('/music/getTopArtists/:uid').get(musicController.getTopArtists);
 //Export API routes
 module.exports = router;
