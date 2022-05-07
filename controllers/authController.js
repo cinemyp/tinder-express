@@ -102,17 +102,21 @@ async function registrate(body) {
       return { registrated: true };
     } else {
       //Registration
-      const gender = await Gender.findOne({
+      let gender = await Gender.findOne({
         name: sex,
       }).exec();
 
+      //TODO: если не выставлен пол, то в регистрации проверять
+      if (!gender) {
+        gender = { _id: '0' };
+      }
       const newProfile = {
         yandexId: id,
         name: first_name,
         avatar: '',
         birthdayDate: birthday,
         email: '',
-        genderId: gender._id,
+        genderId: gender?._id,
         thumbnail: '',
       };
       await Profile.create(newProfile);

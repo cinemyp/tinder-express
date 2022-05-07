@@ -15,6 +15,8 @@ router
   .get(profileController.index)
   .post(profileController.add);
 
+router.route('/profile/:uid').post(profileController.update);
+
 //TODO: организовать удаление пользователя
 // router.route('/profile/:profileId');
 // .get(profileController.view)

@@ -1,5 +1,6 @@
 const Profile = require('../models/profileModel');
 const Like = require('../models/likeModel');
+const Gender = require('../models/genderModel');
 
 /**
  * Метод подгрузки профилей
@@ -82,26 +83,33 @@ exports.view = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.update = (req, res) => {
-  Profile.findById(req.params.profileId, (err, profile) => {
-    if (err) {
-      res.send(err);
-    }
+exports.update = async (req, res) => {
+  try {
+    let gender = await Gender.findOne({
+      name: req.body.gender.toLowerCase(),
+    }).exec();
 
-    profile.name = req.body.name ?? profile.name;
-    profile.avatar = req.body.avatar ?? profile.avatar;
-    profile.birthdayDate = req.body.birthdayDate;
-    profile.email = req.body.email;
-    profile.genderId = req.body.genderId;
-    profile.thumbnail = req.body.thumbnail ?? profile.thumbnail;
-
-    profile.save((err) => {
+    Profile.findById(req.params.uid, (err, profile) => {
       if (err) {
         res.send(err);
       }
-      res.json({ status: true, data: profile });
+      profile.name = req.body.name ?? profile.name;
+      profile.avatar = req.body.avatar ?? profile.avatar;
+      profile.birthdayDate = req.body.birthday ?? profile.birthdayDate;
+      profile.email = req.body.email ?? profile.email;
+      profile.genderId = gender._id ?? profile.genderId;
+      profile.thumbnail = req.body.thumbnail ?? profile.thumbnail;
+
+      profile.save((err) => {
+        if (err) {
+          res.send(err);
+        }
+        res.json({ status: true, data: profile });
+      });
     });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 /**
