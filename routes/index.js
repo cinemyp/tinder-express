@@ -46,8 +46,11 @@ router.route('/dialog/:fromId').get(dialogController.viewReq);
 //MUSIC YM API
 
 const musicController = require('../controllers/musicController');
+const { cache } = require('../middlewares');
 router.route('/music').get(musicController.index);
-router.route('/music/getTopArtists/:uid').get(musicController.getTopArtists);
+router
+  .route('/music/getTopArtists/:uid')
+  .get(cache(60), musicController.getTopArtists);
 router.route('/music/compareTastes/:uids').get(musicController.compareTastes);
 //Export API routes
 module.exports = router;
