@@ -50,7 +50,7 @@ const { cache } = require('../middlewares');
 router.route('/music').get(musicController.index);
 router
   .route('/music/getTopArtists/:uid')
-  .get(cache(60), musicController.getTopArtists);
+  .get(cache(30), musicController.getTopArtists);
 router.route('/music/compareTastes/:uids').get(musicController.compareTastes);
 //Export API routes
 module.exports = router;

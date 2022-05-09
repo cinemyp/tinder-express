@@ -20,7 +20,9 @@ exports.cache = (duration) => {
     } else {
       res.sendResponse = res.jsonp;
       res.jsonp = (body) => {
-        mcache.put(key, body, duration * 1000);
+        if (body.status !== false) {
+          mcache.put(key, body, duration * 1000);
+        }
         res.sendResponse(body);
       };
     }

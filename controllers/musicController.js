@@ -1,6 +1,7 @@
 const Profile = require('../models/profileModel');
 const { YMApi } = require('ym-api');
 const { parseToken, mergeArrays, removeDuplicates } = require('../utils');
+const { response } = require('express');
 
 exports.index = async (req, res) => {
   const api = new YMApi();
@@ -36,11 +37,11 @@ exports.getTopArtists = async (req, res) => {
     const { uid } = req.params;
     await api.init({ uid, access_token: token });
 
-    const { artists: artistsIds, tracks } = await getTracksAndArtists(
-      uid,
-      token
-    );
-
+    const response = await getTracksAndArtists(uid, token);
+    if (!response) {
+      return res.jsonp({ status: false });
+    }
+    const { artists: artistsIds, tracks } = response;
     //считаем количество вхождений и получаем популярных
     const data = countArtists(artistsIds);
 
@@ -69,15 +70,15 @@ exports.compareTastes = async (req, res) => {
     getTracksAndArtists(uidFrom, token),
     getTracksAndArtists(uidTo, token),
   ]);
-
+  console.log(userDataFrom, userDataTo);
   const { artists: artistsFromAll } = userDataFrom;
   const { artists: artistsToAll } = userDataTo;
   //количество совпадений
   const artistMatches = [];
   const len = Math.min(artistsFromAll.length, artistsToAll.length);
 
-  const artistsFrom = artistsFromAll.slice(0, len);
-  const artistsTo = artistsToAll.slice(0, len);
+  const artistsFrom = removeDuplicates(artistsFromAll);
+  const artistsTo = removeDuplicates(artistsToAll);
 
   artistsFrom.forEach((item) => {
     if (artistsTo.indexOf(item) !== -1) {
@@ -85,11 +86,7 @@ exports.compareTastes = async (req, res) => {
     }
   });
 
-  const result = await getArtistsByIds(
-    uidFrom,
-    token,
-    removeDuplicates(artistMatches)
-  );
+  const result = await getArtistsByIds(uidFrom, token, artistMatches);
 
   res.jsonp(result);
 };
@@ -121,11 +118,13 @@ async function getTracksAndArtists(uid, token) {
       api.getLikedTracks(),
       api.getUserPlaylists(),
     ]);
+    if (likedTracks === 'private-library') {
+      return false;
+    }
     const { tracks } = likedTracks.library;
     //вытаскиваем треки из плейлистов, тк нам приходим массив массивов, т.е. плейлистов
     const playlistsIds = playlistTracks.map((item) => item.kind);
     const playlists = await api.getPlaylists(playlistsIds);
-
     //ОБЯЗАТЕЛЬНО! обраезаем количество треков, иначе запрос будет выполняться долго
     const anotherTracks = playlists.map((item) =>
       item.tracks.slice(0, process.env.MAX_PLAYLIST_TRACKS)
