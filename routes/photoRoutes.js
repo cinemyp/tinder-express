@@ -20,19 +20,19 @@ const upload = multer({
   storage: storage,
 });
 
-const sharp = require('sharp');
+// const sharp = require('sharp');
 
-const resizeImages = async (req, res, next) => {
-  if (!req.file) return next();
+// const resizeImages = async (req, res, next) => {
+//   if (!req.file) return next();
 
-  await sharp(req.file.path)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile('/public/uploads/' + Date.now() + '.jpeg');
+//   await sharp(req.file.path)
+//     .resize(500, 500)
+//     .toFormat('jpeg')
+//     .jpeg({ quality: 90 })
+//     .toFile('/public/uploads/' + Date.now() + '.jpeg');
 
-  next();
-};
+//   next();
+// };
 
 const removeOriginalFile = (req, res, next) => {
   const { userId } = req.params;

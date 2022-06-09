@@ -12,7 +12,6 @@ exports.add = async (req, res) => {
     userId: req.body.userId,
     likedUserId: req.body.likedUserId,
   };
-  console.log(req.body);
   try {
     const result = await Like.findOne(newLike).exec();
     const hasLiked = !!result;
@@ -37,7 +36,6 @@ exports.add = async (req, res) => {
       };
       const likeFind = await Like.findOne(otherLike).exec();
       const match = !!likeFind;
-      console.log(likeFind);
       //Создадим диалог
       if (match) {
         createDialog(req.body.userId, req.body.likedUserId, res);

@@ -9,12 +9,24 @@ const Gender = require('../models/genderModel');
  */
 exports.index = async (req, res) => {
   const { userId } = req.query;
-  const user = await Profile.findById(userId);
 
+  if (!userId) {
+    return res
+      .status(400)
+      .jsonp({ message: 'User Id has not been declared in query' });
+  }
+
+  const user = await Profile.findById(userId);
+  if (!user) {
+    return res.status(404).jsonp({
+      status: false,
+      message: 'User has not found',
+    });
+  }
   //TODO: добавить обработку ошибок
   Profile.find({ genderId: { $ne: user.genderId } }, async (err, profiles) => {
     if (err) {
-      res.json({
+      return res.json({
         status: false,
         message: err,
       });

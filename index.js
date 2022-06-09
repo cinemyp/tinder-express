@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 
 const { Server } = require('socket.io');
 
@@ -37,7 +36,6 @@ mongo.then(
 );
 
 //CONFIGURE
-app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
